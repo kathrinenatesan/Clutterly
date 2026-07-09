@@ -112,25 +112,13 @@ category_sizes = {
     "Others": 0
 }
 
+ind_sizes = []
+
 def scan_folder(folder_path):
     dir = Path(folder_path).expanduser()
 
     total_size = 0
     num_files = 0
-
-    # images_size = 0
-    # documents_size = 0
-    # archives_size = 0
-    # installers_size = 0
-    # videos_size = 0
-    # audio_size = 0
-    # code_size = 0
-    # libin_size = 0
-    # sysfiles_size = 0
-    # others_size = 0
-
-    # for testing
-    # others_size = 0
 
     # get data about all files in the folder/subfolders
     for file in dir.rglob('*'):
@@ -147,25 +135,7 @@ def scan_folder(folder_path):
                 category_sizes[file_category[0]] += size
             else:
                 category_sizes["Others"] += size
-
-    categorized_size = sum(category_sizes.values())
-
-    # # printing the results
-    # print(f"Number of files: {num_files}")
-    # print(f"Total size: {total_size / (1024**3):.2f} GB")
-    # print(f"Categorized: {categorized_size / (1024**3):.2f} GB")
-    # print(f"Difference: {(total_size - categorized_size) / (1024**3):.2f} GB")
-
-    # print(f"Images size: {category_sizes['Images'] / (1024**3):.2f}GB")
-    # print(f"Documents size: {category_sizes['Documents'] / (1024**3):.2f}GB")
-    # print(f"Archives size: {category_sizes['Archives'] / (1024**3):.2f}GB")
-    # print(f"Installers size: {category_sizes['Installers'] / (1024**3):.2f}GB")
-    # print(f"Videos size: {category_sizes['Videos'] / (1024**3):.2f}GB")
-    # print(f"Audio size: {category_sizes['Audio'] / (1024**3):.2f}GB")
-    # print(f"Code size: {category_sizes['Code'] / (1024**3):.2f}GB")
-    # print(f"Libraries/Binaries size: {category_sizes['Libraries/Binaries'] / (1024**3):.2f}GB")
-    # print(f"System Files size: {category_sizes['System Files'] / (1024**3):.2f}GB")
-    # print(f"Others size: {category_sizes['Others'] / (1024**3):.2f}GB")
+            ind_sizes.append((size, file.name))
 
     print("\nClutterly Scan Report")
     print("=" * 40)
@@ -183,7 +153,17 @@ def scan_folder(folder_path):
         reverse=True
     ):
         print(f"{name:<22} {size / (1024**3):>7.2f} GB")
-        
+    
+    print("\nLargest Files")
+    print("-" * 40)
+
+    ind_sizes.sort(reverse=True)
+    five_largest = ind_sizes[:5]
+
+    for file in five_largest:
+        print(f"{file[1]:<30} {file[0] / (1024**3):>7.2f} GB")
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python scanner.py <folder_path>")
