@@ -99,25 +99,38 @@ category = {
     ]
 }
 
+category_sizes = {
+    "Images": 0,
+    "Documents": 0,
+    "Archives": 0,
+    "Installers": 0,
+    "Videos": 0,
+    "Audio": 0,
+    "Code": 0,
+    "Libraries/Binaries": 0,
+    "System Files": 0,
+    "Others": 0
+}
+
 def scan_folder(folder_path):
     dir = Path(folder_path).expanduser()
 
     total_size = 0
     num_files = 0
 
-    images_size = 0
-    documents_size = 0
-    archives_size = 0
-    installers_size = 0
-    videos_size = 0
-    audio_size = 0
-    code_size = 0
-    libin_size = 0
-    sysfiles_size = 0
-    others_size = 0
+    # images_size = 0
+    # documents_size = 0
+    # archives_size = 0
+    # installers_size = 0
+    # videos_size = 0
+    # audio_size = 0
+    # code_size = 0
+    # libin_size = 0
+    # sysfiles_size = 0
+    # others_size = 0
 
     # for testing
-    others_size = 0
+    # others_size = 0
 
     # get data about all files in the folder/subfolders
     for file in dir.rglob('*'):
@@ -130,48 +143,47 @@ def scan_folder(folder_path):
             file_category = [key for key, val in category.items() if file.suffix.lower() in val]
             total_size += size
             num_files += 1
-
             if file_category:
-                if file_category[0] == "Images":
-                    images_size += size
-                elif file_category[0] == "Documents":
-                    documents_size += size
-                elif file_category[0] == "Archives":
-                    archives_size += size
-                elif file_category[0] == "Installers":
-                    installers_size += size
-                elif file_category[0] == "Videos or Music":
-                    videos_size += size
-                elif file_category[0] == "Code":
-                    code_size += size
-                elif file_category[0] == "Audio":
-                    audio_size += size
-                elif file_category[0] == "Libaries/Binaries":
-                    libin_size += size
-                elif file_category[0] == "System Files":
-                    sysfiles_size += size
+                category_sizes[file_category[0]] += size
             else:
-                others_size += size
+                category_sizes["Others"] += size
 
-    total_size /= 1000000000 # convert to GB
-    total_size = round(total_size, 2)
+    categorized_size = sum(category_sizes.values())
 
-    # printing the results
+    # # printing the results
+    # print(f"Number of files: {num_files}")
+    # print(f"Total size: {total_size / (1024**3):.2f} GB")
+    # print(f"Categorized: {categorized_size / (1024**3):.2f} GB")
+    # print(f"Difference: {(total_size - categorized_size) / (1024**3):.2f} GB")
 
-    print(f"Total size: {total_size}GB")
-    print(f"Number of files: {num_files}")
+    # print(f"Images size: {category_sizes['Images'] / (1024**3):.2f}GB")
+    # print(f"Documents size: {category_sizes['Documents'] / (1024**3):.2f}GB")
+    # print(f"Archives size: {category_sizes['Archives'] / (1024**3):.2f}GB")
+    # print(f"Installers size: {category_sizes['Installers'] / (1024**3):.2f}GB")
+    # print(f"Videos size: {category_sizes['Videos'] / (1024**3):.2f}GB")
+    # print(f"Audio size: {category_sizes['Audio'] / (1024**3):.2f}GB")
+    # print(f"Code size: {category_sizes['Code'] / (1024**3):.2f}GB")
+    # print(f"Libraries/Binaries size: {category_sizes['Libraries/Binaries'] / (1024**3):.2f}GB")
+    # print(f"System Files size: {category_sizes['System Files'] / (1024**3):.2f}GB")
+    # print(f"Others size: {category_sizes['Others'] / (1024**3):.2f}GB")
 
-    print(f"Images size: {round(images_size / 1000000000, 2)}GB")
-    print(f"Documents size: {round(documents_size / 1000000000, 2)}GB")
-    print(f"Archives size: {round(archives_size / 1000000000, 2)}GB")
-    print(f"Installers size: {round(installers_size / 1000000000, 2)}GB")
-    print(f"Videos size: {round(videos_size / 1000000000, 2)}GB")
-    print(f"Audio size: {round(audio_size / 1000000000, 2)}GB")
-    print(f"Code size: {round(code_size / 1000000000, 2)}GB")
-    print(f"Libraries/Binaries size: {round(libin_size / 1000000000, 2)}GB")
-    print(f"System Files size: {round(sysfiles_size / 1000000000, 2)}GB")
-    print(f"Others size: {round(others_size / 1000000000, 2)}GB")
+    print("\nClutterly Scan Report")
+    print("=" * 40)
 
+    print(f"Folder      : {dir}")
+    print(f"Total files : {num_files:,}")
+    print(f"Total size  : {total_size / (1024**3):.2f} GB")
+
+    print("\nLargest Categories")
+    print("-" * 40)
+
+    for name, size in sorted(
+        category_sizes.items(),
+        key=lambda item: item[1],
+        reverse=True
+    ):
+        print(f"{name:<22} {size / (1024**3):>7.2f} GB")
+        
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python scanner.py <folder_path>")
