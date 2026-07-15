@@ -137,35 +137,28 @@ def scan_folder(folder_path):
                 category_sizes["Others"] += size
             ind_sizes.append((size, file.name))
 
-    print("\nClutterly Scan Report")
-    print("=" * 40)
+    # print("\nClutterly Scan Report")
+    # print("=" * 40)
 
-    print(f"Folder      : {dir}")
-    print(f"Total files : {num_files:,}")
-    print(f"Total size  : {total_size / (1024**3):.2f} GB")
+    # print(f"Folder      : {dir}")
+    # print(f"Total files : {num_files:,}")
+    # print(f"Total size  : {total_size / (1024**3):.2f} GB")
 
-    print("\nLargest Categories")
-    print("-" * 40)
+    # print("\nLargest Categories")
+    # print("-" * 40)
 
-    for name, size in sorted(
-        category_sizes.items(),
-        key=lambda item: item[1],
-        reverse=True
-    ):
-        print(f"{name:<22} {size / (1024**3):>7.2f} GB")
+    # for name, size in sorted(
+    #     category_sizes.items(),
+    #     key=lambda item: item[1],
+    #     reverse=True
+    # ):
+    #     print(f"{name:<22} {size / (1024**3):>7.2f} GB")
     
-    print("\nLargest Files")
-    print("-" * 40)
+    # print("\nLargest Files")
+    # print("-" * 40)
 
-    ind_sizes.sort(reverse=True)
-    five_largest = ind_sizes[:5]
+    # ind_sizes.sort(reverse=True)
+    # five_largest = ind_sizes[:5]
 
-    for file in five_largest:
-        print(f"{file[1]:<30} {file[0] / (1024**3):>7.2f} GB")
-
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python scanner.py <folder_path>")
-    else:
-        scan_folder(sys.argv[1])
+    # for file in five_largest:
+    #     print(f"{file[1]:<30} {file[0] / (1024**3):>7.2f} GB")
