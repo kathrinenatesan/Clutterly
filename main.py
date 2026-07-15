@@ -8,4 +8,3 @@ if __name__ == "__main__":
         print("Usage: python scanner.py <folder_path>")
     else:
         files = scan_folder(sys.argv[1])
-print(files)

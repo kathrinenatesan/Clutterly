@@ -3,6 +3,7 @@ from pathlib import Path
 from datetime import datetime
 import sys
 
+
 category = {
     "Images": [
         ".png",
@@ -114,8 +115,21 @@ category_sizes = {
 
 ind_sizes = []
 
+metadata = {
+    "scan_day": datetime.today(),
+    "folder": None,
+    "total_files": 0,
+    "total_size": 0,
+     
+    "files": {
+
+    }
+
+}
+
 def scan_folder(folder_path):
     dir = Path(folder_path).expanduser()
+    metadata["folder"] = folder_path
 
     total_size = 0
     num_files = 0
@@ -123,42 +137,27 @@ def scan_folder(folder_path):
     # get data about all files in the folder/subfolders
     for file in dir.rglob('*'):
         if file.is_file():
-            info = file.stat()
-            size = info.st_size
-            created_time = datetime.fromtimestamp(info.st_ctime)
-            modified_time = datetime.fromtimestamp(info.st_mtime)
-
-            file_category = [key for key, val in category.items() if file.suffix.lower() in val]
-            total_size += size
+            file_info = file.stat()
+            file_data = {
+                "id": num_files,
+                "name": file.name,
+                "path": Path(file.name).resolve(),
+                "extension": file.suffix.lower(),
+                "size": file_info.st_size,
+                "created": file_info.st_ctime,
+                "modified": file_info.st_mtime,
+                "preview": "",
+                "description": "",
+                "embedding": None,
+                "cluster": None,
+                "suggested_folder": None,
+                "reason": None,
+                "delete_candidate": False,
+                "duplicates": []
+            }
+            total_size += file_info.st_size
+            metadata["files"][num_files] = file_data
             num_files += 1
-            if file_category:
-                category_sizes[file_category[0]] += size
-            else:
-                category_sizes["Others"] += size
-            ind_sizes.append((size, file.name))
-
-    # print("\nClutterly Scan Report")
-    # print("=" * 40)
-
-    # print(f"Folder      : {dir}")
-    # print(f"Total files : {num_files:,}")
-    # print(f"Total size  : {total_size / (1024**3):.2f} GB")
-
-    # print("\nLargest Categories")
-    # print("-" * 40)
-
-    # for name, size in sorted(
-    #     category_sizes.items(),
-    #     key=lambda item: item[1],
-    #     reverse=True
-    # ):
-    #     print(f"{name:<22} {size / (1024**3):>7.2f} GB")
-    
-    # print("\nLargest Files")
-    # print("-" * 40)
-
-    # ind_sizes.sort(reverse=True)
-    # five_largest = ind_sizes[:5]
-
-    # for file in five_largest:
-    #     print(f"{file[1]:<30} {file[0] / (1024**3):>7.2f} GB")
+    metadata["total_size"] = total_size
+    metadata["total_files"] = num_files
+    return metadata
